@@ -1,0 +1,35 @@
+[package]
+name = "BlinkBash"
+version = "1.0.0"
+edition = "2021"
+license = "WTFPL"
+publish = false
+
+[dependencies]
+solana-program = "=1.18.15"
+spl-token = {version = "4.0.0", features = ["no-entrypoint"]}
+spl-token-2022 = {version = "3.0.2", features = ["no-entrypoint"]}
+arrayref = "0.3.6"
+borsh = "=1.4.0"
+spl-associated-token-account = {version = "3.0.2", features = ["no-entrypoint"]}
+shank = "0.4.2"
+num-derive = "^0.3"
+num-traits = "^0.2"
+thiserror = "^1.0"
+bytemuck = "1.14.1"
+mpl-utils = "0.3.3"
+spl-noop = { version = "0.2.0", features = ["cpi"] }
+podded = "0.5.1"
+strum = { version = "0.26.1", features = ["derive"] }
+mpl-core = "0.7.1"
+proc-macro-crate = "=3.1.0"
+toml_edit = "^0.21"
+spl-discriminator = "0.2.2"
+spl-type-length-value = "0.4.3"
+spl-tlv-account-resolution = "0.6.3"
+spl-pod = "0.2.2"
+spl-token-metadata-interface = { version = "0.3.3"}
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
