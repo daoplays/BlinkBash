@@ -142,52 +142,53 @@ pub fn enter<'a>(
             ],
             &[&[&accounts::PDA_SEED.to_le_bytes(), &[pda_bump_seed]]],
         )?;
-    }
 
-    if **ctx.accounts.leaderboard.try_borrow_lamports()? == 0 {
-        let temp: Leaderboard = Leaderboard {
-            account_type: state::AccountType::Leaderboard,
-            game: args.game,
-            date: current_date,
-            entrants: Vec::new(),
-            scores: Vec::new(),
-        };
+        if **ctx.accounts.leaderboard.try_borrow_lamports()? == 0 {
+            let temp: Leaderboard = Leaderboard {
+                account_type: state::AccountType::Leaderboard,
+                game: args.game,
+                date: current_date,
+                entrants: Vec::new(),
+                scores: Vec::new(),
+            };
 
-        utils::create_program_account(
-            ctx.accounts.user,
-            ctx.accounts.leaderboard,
-            program_id,
-            leaderboard_bump_seed,
-            to_vec(&temp).unwrap().len(),
-            vec![
-                &args.game.to_le_bytes(),
-                &current_date.to_le_bytes(),
-                b"Leaderboard",
-            ],
-        )?;
+            utils::create_program_account(
+                ctx.accounts.user,
+                ctx.accounts.leaderboard,
+                program_id,
+                leaderboard_bump_seed,
+                to_vec(&temp).unwrap().len(),
+                vec![
+                    &args.game.to_le_bytes(),
+                    &current_date.to_le_bytes(),
+                    b"Leaderboard",
+                ],
+            )?;
 
-        msg!("init leaderboard data");
-        temp.serialize(&mut &mut ctx.accounts.leaderboard.data.borrow_mut()[..])?;
-    }
+            msg!("init leaderboard data");
+            temp.serialize(&mut &mut ctx.accounts.leaderboard.data.borrow_mut()[..])?;
+        }
 
-    // check if we should add this entry to the leaderboard
-    let mut leaderboard = Leaderboard::try_from_slice(&ctx.accounts.leaderboard.data.borrow()[..])?;
-    let user_data = state::User::try_from_slice(&ctx.accounts.user_data.data.borrow()[..])?;
+        // check if we should add this entry to the leaderboard
+        let mut leaderboard =
+            Leaderboard::try_from_slice(&ctx.accounts.leaderboard.data.borrow()[..])?;
+        let user_data = state::User::try_from_slice(&ctx.accounts.user_data.data.borrow()[..])?;
 
-    if leaderboard.scores.len() < 10 {
-        let old_size = ctx.accounts.leaderboard.data_len();
+        if leaderboard.scores.len() < 10 {
+            let old_size = ctx.accounts.leaderboard.data_len();
 
-        leaderboard.entrants.push(user_data.user_id);
-        leaderboard.scores.push(0);
+            leaderboard.entrants.push(user_data.user_id);
+            leaderboard.scores.push(0);
 
-        utils::check_for_realloc(
-            ctx.accounts.leaderboard,
-            ctx.accounts.user,
-            old_size,
-            to_vec(&leaderboard).unwrap().len(),
-        )?;
+            utils::check_for_realloc(
+                ctx.accounts.leaderboard,
+                ctx.accounts.user,
+                old_size,
+                to_vec(&leaderboard).unwrap().len(),
+            )?;
 
-        leaderboard.serialize(&mut &mut ctx.accounts.leaderboard.data.borrow_mut()[..])?;
+            leaderboard.serialize(&mut &mut ctx.accounts.leaderboard.data.borrow_mut()[..])?;
+        }
     }
 
     Ok(())
