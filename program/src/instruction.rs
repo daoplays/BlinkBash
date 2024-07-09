@@ -65,6 +65,8 @@ pub enum BlinkInstruction {
     #[account(8, name = "system_program", desc = "System program")]
     #[account(9, name = "token_2022", desc = "System program")]
     #[account(10, name = "associated", desc = "System program")]
+    #[account(11, optional, name = "reference", desc = "ref user")]
+    #[account(12, optional, writable, name = "ref_bash", desc = "ref bash")]
     Enter(EnterMeta),
     #[account(0, writable, signer, name = "user", desc = "Users account, signer")]
     #[account(1, writable, name = "pda", desc = "pda account")]
@@ -79,6 +81,8 @@ pub enum BlinkInstruction {
     #[account(10, name = "system_program", desc = "System program")]
     #[account(11, name = "token_2022", desc = "System program")]
     #[account(12, name = "associated", desc = "System program")]
+    #[account(13, optional, name = "reference", desc = "ref user")]
+    #[account(14, optional, writable, name = "ref_bash", desc = "ref bash")]
     Vote(VoteMeta),
     #[account(0, writable, signer, name = "user", desc = "Users account, signer")]
     #[account(1, writable, name = "pda", desc = "pda account")]

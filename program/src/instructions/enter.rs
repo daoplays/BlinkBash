@@ -143,6 +143,32 @@ pub fn enter<'a>(
             &[&[&accounts::PDA_SEED.to_le_bytes(), &[pda_bump_seed]]],
         )?;
 
+        // check if we have a reference
+        if ctx.accounts.reference.is_some() {
+            let reference = ctx.accounts.reference.unwrap();
+            if reference.key != ctx.accounts.user.key {
+                let ref_bash = ctx.accounts.ref_bash.unwrap();
+                accounts::check_token_account(
+                    reference,
+                    ctx.accounts.bash_mint,
+                    ref_bash,
+                    ctx.accounts.token_2022,
+                )?;
+
+                // only transfer if the ATA already exists
+                if **ref_bash.try_borrow_lamports()? > 0 {
+                    utils::mint(
+                        50,
+                        ctx.accounts.token_2022,
+                        ctx.accounts.bash_mint,
+                        ref_bash,
+                        ctx.accounts.pda,
+                        pda_bump_seed,
+                    )?;
+                }
+            }
+        }
+
         if **ctx.accounts.leaderboard.try_borrow_lamports()? == 0 {
             let temp: Leaderboard = Leaderboard {
                 account_type: state::AccountType::Leaderboard,

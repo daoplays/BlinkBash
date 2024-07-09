@@ -180,6 +180,32 @@ pub fn vote<'a>(
         temp.serialize(&mut &mut ctx.accounts.leaderboard.data.borrow_mut()[..])?;
     }
 
+    // check if we have a reference
+    if ctx.accounts.reference.is_some() {
+        let reference = ctx.accounts.reference.unwrap();
+        if reference.key != ctx.accounts.user.key {
+            let ref_bash = ctx.accounts.ref_bash.unwrap();
+            accounts::check_token_account(
+                reference,
+                ctx.accounts.bash_mint,
+                ref_bash,
+                ctx.accounts.token_2022,
+            )?;
+
+            // only transfer if the ATA already exists
+            if **ref_bash.try_borrow_lamports()? > 0 {
+                utils::mint(
+                    10,
+                    ctx.accounts.token_2022,
+                    ctx.accounts.bash_mint,
+                    ref_bash,
+                    ctx.accounts.pda,
+                    pda_bump_seed,
+                )?;
+            }
+        }
+    }
+
     let mut leaderboard = Leaderboard::try_from_slice(&ctx.accounts.leaderboard.data.borrow()[..])?;
     let old_size = ctx.accounts.leaderboard.data_len();
 

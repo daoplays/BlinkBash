@@ -526,6 +526,39 @@ pub fn burn<'a>(
     Ok(())
 }
 
+pub fn mint<'a>(
+    amount: u64,
+    token_program: &AccountInfo<'a>,
+    token_mint: &AccountInfo<'a>,
+    token_account: &AccountInfo<'a>,
+    pda: &AccountInfo<'a>,
+    pda_bump_seed: u8,
+) -> ProgramResult {
+    let mint_to_idx = spl_token_2022::instruction::mint_to_checked(
+        token_program.key,
+        token_mint.key,
+        token_account.key,
+        pda.key,
+        &[pda.key],
+        amount,
+        1,
+    )
+    .unwrap();
+
+    invoke_signed(
+        &mint_to_idx,
+        &[
+            token_program.clone(),
+            token_mint.clone(),
+            token_account.clone(),
+            pda.clone(),
+        ],
+        &[&[&accounts::PDA_SEED.to_le_bytes(), &[pda_bump_seed]]],
+    )?;
+
+    Ok(())
+}
+
 pub fn create_user_data<'a>(
     user: &'a AccountInfo<'a>,
     user_data: &'a AccountInfo<'a>,
