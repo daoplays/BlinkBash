@@ -108,6 +108,7 @@ pub enum BlinkInstruction {
     #[account(10, name = "core", desc = "Core program")]
     #[account(11, name = "token_2022", desc = "Token 2022 program")]
     #[account(12, name = "associated", desc = "Token 2022 program")]
+    #[account(13, name = "listing_tp", desc = "Token program for listing")]
     ListItem(ListMeta),
     #[account(0, writable, signer, name = "user", desc = "Users account, signer")]
     #[account(1, writable, name = "pda", desc = "pda account")]
@@ -122,5 +123,6 @@ pub enum BlinkInstruction {
     #[account(10, name = "core", desc = "Core program")]
     #[account(11, name = "token_2022", desc = "Token 2022 program")]
     #[account(12, name = "associated", desc = "Token 2022 program")]
+    #[account(13, name = "listing_tp", desc = "Token program for listing")]
     PurchaseItem(PurchaseMeta),
 }

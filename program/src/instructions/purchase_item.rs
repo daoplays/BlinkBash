@@ -42,6 +42,8 @@ pub fn purchase_item<'a>(
         ctx.accounts.token_2022,
     )?;
 
+    let listing_2022 = accounts::check_token_program_key(ctx.accounts.listing_tp)?;
+
     if ctx.accounts.bash_mint.key != &accounts::bash_mint::ID {
         return Err(ProgramError::InvalidAccountData);
     }
@@ -80,14 +82,14 @@ pub fn purchase_item<'a>(
             ctx.accounts.user,
             ctx.accounts.item,
             ctx.accounts.user_item,
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
         )?;
 
         accounts::check_token_account(
             ctx.accounts.pda,
             ctx.accounts.item,
             ctx.accounts.pda_item,
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
         )?;
 
         utils::create_ata(
@@ -95,17 +97,17 @@ pub fn purchase_item<'a>(
             ctx.accounts.user,
             ctx.accounts.item,
             ctx.accounts.user_item,
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
         )?;
 
         utils::transfer_tokens(
-            true,
+            listing_2022,
             quantity,
             ctx.accounts.pda_item,
             ctx.accounts.item,
             ctx.accounts.user_item,
             ctx.accounts.pda,
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
             pda_bump_seed,
             &vec![&accounts::PDA_SEED.to_le_bytes()],
             mint.base.decimals,

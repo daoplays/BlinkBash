@@ -42,6 +42,8 @@ pub fn list_item<'a>(
         ctx.accounts.token_2022,
     )?;
 
+    let listing_2022 = accounts::check_token_program_key(ctx.accounts.listing_tp)?;
+
     accounts::check_system_program_key(ctx.accounts.system_program)?;
 
     // we only need to burn if we are actually listing something new rather than updating
@@ -89,7 +91,7 @@ pub fn list_item<'a>(
             ctx.accounts.pda,
             ctx.accounts.item,
             ctx.accounts.pda_item.unwrap(),
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
         )?;
 
         utils::create_ata(
@@ -97,17 +99,17 @@ pub fn list_item<'a>(
             ctx.accounts.pda,
             ctx.accounts.item,
             ctx.accounts.pda_item.unwrap(),
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
         )?;
 
         utils::transfer_tokens(
-            true,
+            listing_2022,
             args.quantity,
             ctx.accounts.user_item.unwrap(),
             ctx.accounts.item,
             ctx.accounts.pda_item.unwrap(),
             ctx.accounts.user,
-            ctx.accounts.token_2022,
+            ctx.accounts.listing_tp,
             pda_bump_seed,
             &vec![&accounts::PDA_SEED.to_le_bytes()],
             mint.base.decimals,
